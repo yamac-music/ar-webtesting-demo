@@ -2,7 +2,7 @@
 
 🚀 **完全HTTPS対応のWebARデモサイト** - Model-Viewer vs Hiroマーカー
 
-🌟 **[ライブデモを見る](https://your-username.github.io/ar-webtesting-demo/)**
+🌟 **[ライブデモを見る](https://yamac-music.github.io/ar-webtesting-demo/)**
 
 ## ✨ 特徴
 
