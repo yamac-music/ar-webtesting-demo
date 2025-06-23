@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR.js - Hiroマーカー AR</title>
+    
+    <!-- AR.js A-Frame版を読み込み -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #000;
+            overflow: hidden;
+        }
+        
+        .ui-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            padding: 15px;
+            color: white;
+        }
+        
+        .ui-overlay h1 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .instructions {
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .marker-info {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            padding: 15px;
+            color: white;
+            text-align: center;
+        }
+        
+        .marker-info a {
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .marker-info a:hover {
+            text-decoration: underline;
+        }
+        
+        .controls {
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            z-index: 1000;
+        }
+        
+        .control-btn {
+            display: block;
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 25px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: background-color 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .status {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        
+        /* A-Frameのローディング画面を非表示 */
+        .a-loader-title {
+            display: none !important;
+        }
+        
+        /* カメラ権限エラー時の表示調整 */
+        .arjs-video {
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- UI オーバーレイ -->
+    <div class="ui-overlay">
+        <h1>🎯 Hiroマーカー AR</h1>
+        <div class="instructions">
+            Hiroマーカーをカメラに向けると3Dモデルが表示されます
+        </div>
+    </div>
+    
+    <!-- コントロールボタン -->
+    <div class="controls">
+        <button class="control-btn" onclick="toggleModel()" title="モデル切り替え">🔄</button>
+        <button class="control-btn" onclick="resetCamera()" title="カメラリセット">📷</button>
+    </div>
+    
+    <!-- ステータス表示 -->
+    <div class="status" id="status">
+        初期化中...
+    </div>
+    
+    <!-- マーカー情報 -->
+    <div class="marker-info">
+        <p>✅ <strong>HTTPS対応:</strong> npm run dev でHTTPSサーバー起動済み</p>
+        <p>📋 <a href="./hiro-marker.svg" target="_blank">Hiroマーカーをダウンロード</a> して印刷してください</p>
+        <p>💡 マーカーを平らに置き、カメラを30cm程度離して向けてください</p>
+    </div>
+    
+    <!-- A-Frame ARシーン -->
+    <a-scene
+        embedded
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best; maxDetectionRate: 60; canvasWidth: 640; canvasHeight: 480;"
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
+        
+        <!-- アセット定義 -->
+        <a-assets>
+            <!-- カスタムモデル（GLB変換後に使用） -->
+            <a-asset-item id="customModel" src="./custom_model.glb"></a-asset-item>
+        </a-assets>
+        
+        <!-- Hiroマーカー検出時に表示するオブジェクト -->
+        <a-marker preset="hiro" id="hiroMarker">
+            <!-- デフォルト: 回転するキューブ -->
+            <a-box 
+                id="defaultModel"
+                position="0 0.5 0" 
+                rotation="0 45 0"
+                scale="1 1 1"
+                material="color: #ff6b6b; roughness: 0.3; metalness: 0.1;"
+                animation="property: rotation; to: 0 405 0; loop: true; dur: 4000; easing: linear;"
+                shadow="cast: true; receive: false;">
+            </a-box>
+            
+            <!-- 追加オブジェクト: 浮遊する球 -->
+            <a-sphere 
+                position="1.5 1 0" 
+                radius="0.3" 
+                material="color: #4ecdc4; emissive: #4ecdc4; emissiveIntensity: 0.2;"
+                animation="property: position; to: 1.5 2 0; dir: alternate; loop: true; dur: 2000; easing: easeInOutSine;">
+            </a-sphere>
+            
+            <!-- 円柱 -->
+            <a-cylinder 
+                position="-1.5 0.75 0" 
+                radius="0.3" 
+                height="1.5" 
+                material="color: #ffe66d; roughness: 0.4;"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear;">
+            </a-cylinder>
+            
+            <!-- カスタムモデル（GLB変換後に表示） -->
+            <a-entity
+                id="customModelEntity"
+                gltf-model="#customModel"
+                position="0 0 1.5"
+                scale="0.5 0.5 0.5"
+                rotation="0 0 0"
+                visible="false"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear;">
+            </a-entity>
+            
+            <!-- 地面の影 -->
+            <a-plane 
+                position="0 0 0" 
+                rotation="-90 0 0" 
+                width="4" 
+                height="4" 
+                material="color: #333; opacity: 0.3; transparent: true;"
+                shadow="receive: true;">
+            </a-plane>
+            
+            <!-- テキスト表示 -->
+            <a-text 
+                value="AR Test Model" 
+                position="0 2 0" 
+                align="center" 
+                color="#ffffff"
+                shader="msdf"
+                font="dejavu"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear;">
+            </a-text>
+        </a-marker>
+        
+        <!-- カメラ設定 -->
+        <a-entity camera>
+            <!-- 環境光 -->
+            <a-light type="ambient" color="#ffffff" intensity="0.4"></a-light>
+            <!-- 指向性ライト -->
+            <a-light type="directional" position="1 1 1" color="#ffffff" intensity="0.6" cast-shadow="true"></a-light>
+        </a-entity>
+    </a-scene>
+    
+    <script>
+        let currentModel = 0;
+        const models = ['default', 'custom'];
+        const status = document.getElementById('status');
+        
+        // AR.js初期化完了時の処理
+        document.addEventListener('DOMContentLoaded', function() {
+            status.textContent = 'カメラ初期化中...';
+            
+            // マーカー検出イベント
+            const marker = document.querySelector('#hiroMarker');
+            
+            marker.addEventListener('markerFound', function() {
+                status.textContent = '✅ Hiroマーカー検出中';
+                console.log('Hiroマーカーが検出されました');
+            });
+            
+            marker.addEventListener('markerLost', function() {
+                status.textContent = '🔍 マーカーを探しています...';
+                console.log('Hiroマーカーが見失われました');
+            });
+        });
+        
+        // カメラ初期化完了の検出
+        window.addEventListener('camera-init', function() {
+            status.textContent = '📹 カメラ準備完了';
+        });
+        
+        // エラーハンドリング
+        window.addEventListener('arjs-video-loaded', function() {
+            status.textContent = '🎥 カメラ映像読み込み完了';
+        });
+        
+        // モデル切り替え機能
+        function toggleModel() {
+            const defaultModel = document.getElementById('defaultModel');
+            const customModelEntity = document.getElementById('customModelEntity');
+            
+            currentModel = (currentModel + 1) % models.length;
+            
+            if (models[currentModel] === 'default') {
+                defaultModel.setAttribute('visible', 'true');
+                customModelEntity.setAttribute('visible', 'false');
+                status.textContent = '🎲 デフォルトモデル表示中';
+            } else {
+                defaultModel.setAttribute('visible', 'false');
+                customModelEntity.setAttribute('visible', 'true');
+                status.textContent = '🎭 カスタムモデル表示中';
+            }
+        }
+        
+        // カメラリセット機能
+        function resetCamera() {
+            // ページをリロードしてカメラをリセット
+            window.location.reload();
+        }
+        
+        // エラー処理
+        window.addEventListener('error', function(e) {
+            status.textContent = '❌ エラーが発生しました';
+            console.error('AR.jsエラー:', e);
+        });
+        
+        // パフォーマンス監視
+        setInterval(function() {
+            const fps = document.querySelector('a-scene').systems.fps;
+            if (fps && fps.fps < 20) {
+                console.warn('FPS低下検出:', fps.fps);
+            }
+        }, 5000);
+    </script>
+    
+    <!-- 技術仕様と使用方法のコメント -->
+    <!--
+    ⚠️ 重要: HTTPS環境が必須です ⚠️
+    
+    カメラアクセスにはHTTPS接続が必要です。以下の方法でHTTPSサーバーを起動してください:
+    
+    方法1: Vite開発サーバー（推奨）
+    1. ターミナルで以下を実行:
+       npm install
+       npm run dev
+    2. 自動でブラウザが開き、HTTPSで起動します
+    3. 自己証明書の警告が表示されたら「詳細設定」→「安全ではないサイトに移動」をクリック
+    
+    方法2: Live Server（VSCode拡張）
+    1. VSCodeでLive Server拡張をインストール
+    2. HTMLファイルを右クリック → "Open with Live Server"
+    
+    方法3: Node.js https-server
+    1. npm install -g http-server
+    2. http-server -S -p 8080
+    
+    Hiroマーカー AR実装の技術仕様:
+    
+    使用ライブラリ:
+    - A-Frame 1.4.0: WebVRフレームワーク
+    - AR.js: WebARライブラリ
+    
+    マーカー仕様:
+    - preset="hiro": 標準的なHiroマーカーパターン
+    - 検出距離: 10cm〜100cm程度
+    - 推奨印刷サイズ: 5cm×5cm以上
+    
+    3Dオブジェクト:
+    - Box: 回転するキューブ（メインオブジェクト）
+    - Sphere: 浮遊する球体
+    - Cylinder: 回転する円柱
+    - Text: 3Dテキスト表示
+    - Custom Model: GLB形式のカスタムモデル
+    
+    インタラクション機能:
+    - モデル切り替えボタン
+    - カメラリセット機能
+    - リアルタイム状態表示
+    
+    最適化設定:
+    - maxDetectionRate: 60fps
+    - canvas解像度: 640x480
+    - trackingMethod: best（最高品質）
+    
+    使用方法:
+    1. HTTPSサーバーを起動（上記参照）
+    2. Hiroマーカーを印刷
+    3. マーカーを平面に配置
+    4. カメラを30cm程度離して向ける
+    5. 3Dオブジェクトが表示される
+    -->
+</body>
+</html>

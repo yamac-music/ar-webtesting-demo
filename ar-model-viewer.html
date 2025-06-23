@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Model Viewer - 平面認識AR</title>
+    
+    <!-- model-viewerライブラリをCDNから読み込み -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        model-viewer {
+            width: 100%;
+            height: 500px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <h1>平面認識AR Demo</h1>
+    
+    <!-- model-viewerタグでAR対応3Dモデルを表示 -->
+    <model-viewer
+        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+        alt="宇宙飛行士の3Dモデル"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        camera-controls
+        auto-rotate
+        autoplay
+        shadow-intensity="1"
+        loading="eager"
+        reveal="auto">
+    </model-viewer>
+    
+    <div class="instructions">
+        <h3>使い方</h3>
+        <ul>
+            <li><strong>3Dビュー:</strong> モデルをドラッグして回転、ピンチでズーム操作ができます</li>
+            <li><strong>アニメーション:</strong> 宇宙飛行士が自動でアニメーションします（autoplay属性）</li>
+            <li><strong>ARモード:</strong> 右下のARボタンをタップしてAR Quick Lookを起動</li>
+            <li><strong>平面配置:</strong> カメラで床や机を映すと自動的に平面を検出し、モデルを配置できます</li>
+            <li><strong>移動・鑑賞:</strong> 配置後は実際に歩き回ってモデルを様々な角度から観察できます</li>
+        </ul>
+        
+        <p><small>※ iPhoneのSafariでアクセスしてARボタンをタップしてください</small></p>
+    </div>
+    
+    <!-- 各属性の説明をコメントで記載 -->
+    <!--
+    model-viewer属性の説明:
+    
+    src: 表示する3DモデルのURL（GLB/GLTF形式）
+    alt: モデルの説明文（アクセシビリティ用）
+    ar: AR機能を有効化する必須属性
+    ar-modes: AR表示方式を指定
+        - webxr: WebXR対応デバイス用
+        - scene-viewer: Android用ARCore Scene Viewer
+        - quick-look: iOS用AR Quick Look
+    camera-controls: 3Dビューでユーザーがカメラ操作可能
+    auto-rotate: モデルが自動回転
+    autoplay: GLB/GLTFファイル内のアニメーションを自動再生
+    shadow-intensity: 影の濃さ（0-1の値）
+    loading: モデルの読み込みタイミング
+    reveal: モデル表示のタイミング
+    -->
+</body>
+</html>

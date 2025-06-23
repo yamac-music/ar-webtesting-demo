@@ -1,0 +1,30 @@
+{
+  "name": "ar-test-project",
+  "version": "1.0.0",
+  "description": "WebAR comparison demo project",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "dev-https": "vite --host",
+    "dev-express": "node start-https-server.js",
+    "build": "vite build",
+    "preview": "vite preview --host"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.0.2",
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "ar",
+    "webxr",
+    "model-viewer",
+    "ar.js"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0",
+    "open": "^10.1.2"
+  }
+}
