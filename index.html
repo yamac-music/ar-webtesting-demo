@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebAR 比較デモサイト</title>
+    <title>WebAR デモサイト</title>
     
     <style>
         * {
@@ -20,436 +20,251 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
         }
         
         header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
         
         header h1 {
             font-size: 3em;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         header p {
-            font-size: 1.2em;
+            font-size: 1.3em;
             opacity: 0.9;
-            margin-bottom: 30px;
         }
         
-        .comparison-grid {
+        .demo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
         }
         
-        .ar-option {
+        .demo-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 30px;
+            padding: 40px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
         }
         
-        .ar-option:hover {
+        .demo-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
         
-        .ar-option h2 {
-            font-size: 2em;
-            margin-bottom: 15px;
+        .demo-card h2 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        
-        .ar-option .emoji {
-            font-size: 1.2em;
-        }
-        
-        .features {
-            margin: 20px 0;
-        }
-        
-        .features ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .features li {
-            margin: 8px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .features li:before {
-            content: "✅";
-            position: absolute;
-            left: 0;
-        }
-        
-        .pros-cons {
-            margin: 20px 0;
-        }
-        
-        .pros, .cons {
-            margin: 10px 0;
-        }
-        
-        .pros h4 {
-            color: #4ade80;
-            margin-bottom: 5px;
-        }
-        
-        .cons h4 {
-            color: #f87171;
-            margin-bottom: 5px;
-        }
-        
-        .pros ul, .cons ul {
-            list-style: none;
-            padding-left: 0;
-            font-size: 0.9em;
-        }
-        
-        .pros li:before {
-            content: "👍";
-            margin-right: 8px;
-        }
-        
-        .cons li:before {
-            content: "👎";
-            margin-right: 8px;
-        }
-        
-        .demo-buttons {
-            display: flex;
+            justify-content: center;
             gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
         }
         
-        .btn {
+        .demo-card .description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .demo-btn {
             display: inline-block;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            min-width: 140px;
-        }
-        
-        .btn-primary {
+            padding: 15px 30px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin: 5px;
         }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
+        .demo-btn:hover {
+            transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
         }
         
-        .btn-secondary {
+        .demo-btn.secondary {
             background: rgba(255, 255, 255, 0.2);
-            color: white;
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
-        .btn-secondary:hover {
+        .demo-btn.secondary:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
         }
         
-        .technical-comparison {
+        .marker-download {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px;
-            margin-bottom: 30px;
+            text-align: center;
+            margin-bottom: 40px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .comparison-table {
+        .marker-preview {
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px auto;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .marker-preview svg {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            height: 100%;
         }
         
-        .comparison-table th,
-        .comparison-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .comparison-table th {
+        .instructions {
             background: rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 50px;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
             padding: 30px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .footer h3 {
-            margin-bottom: 15px;
+        .instructions h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
         }
         
-        .footer p {
-            opacity: 0.8;
-            line-height: 1.6;
+        .instructions ol {
+            font-size: 1.1em;
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
         }
         
         @media (max-width: 768px) {
             .container {
-                padding: 15px;
+                padding: 20px 15px;
             }
             
             header h1 {
                 font-size: 2em;
             }
             
-            .ar-option {
-                padding: 20px;
+            .demo-card {
+                padding: 30px 20px;
             }
             
-            .demo-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
+            .demo-btn {
                 width: 100%;
+                margin: 10px 0;
             }
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-        
-        .badge-recommended {
-            background: #10b981;
-            color: white;
-        }
-        
-        .badge-advanced {
-            background: #f59e0b;
-            color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🚀 WebAR 比較デモ</h1>
-            <p>Model-Viewer vs マーカーベースAR - あなたに最適な実装方法を見つけよう</p>
+            <h1>🚀 WebAR デモサイト</h1>
+            <p>2種類のWebAR技術を体験できます</p>
         </header>
         
-        <div class="comparison-grid">
-            <!-- Model-Viewer案 -->
-            <div class="ar-option">
-                <h2>
-                    <span class="emoji">📱</span>
-                    Model-Viewer AR
-                    <span class="badge badge-recommended">推奨</span>
-                </h2>
-                
-                <div class="features">
-                    <h3>特徴</h3>
-                    <ul>
-                        <li>HTMLタグだけで実装完了</li>
-                        <li>iPhone AR Quick Look対応</li>
-                        <li>平面自動認識</li>
-                        <li>マーカー不要</li>
-                        <li>Google製で安定性抜群</li>
-                    </ul>
+        <div class="demo-grid">
+            <!-- Model-Viewer AR -->
+            <div class="demo-card">
+                <h2>📱 Model-Viewer AR</h2>
+                <div class="description">
+                    HTMLタグだけで実装できる最新のWebAR技術。<br>
+                    平面認識で3Dモデルを配置できます。<br>
+                    <strong>マーカー不要・簡単操作</strong>
                 </div>
-                
-                <div class="pros-cons">
-                    <div class="pros">
-                        <h4>メリット</h4>
-                        <ul>
-                            <li>開発時間が超短縮（10分で実装）</li>
-                            <li>デバッグが簡単</li>
-                            <li>ユーザー体験が直感的</li>
-                            <li>メンテナンスが容易</li>
-                            <li>プラットフォーム自動対応</li>
-                        </ul>
-                    </div>
-                    <div class="cons">
-                        <h4>デメリット</h4>
-                        <ul>
-                            <li>カスタマイズ性に制限</li>
-                            <li>リアルタイム位置変更不可</li>
-                            <li>GLB/GLTF形式必須</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="demo-buttons">
-                    <a href="ar-model-viewer.html" class="btn btn-primary">🎯 基本デモ</a>
-                    <a href="ar-model-viewer-animated.html" class="btn btn-secondary">🎭 アニメーション版</a>
-                    <a href="ar-model-viewer-custom.html" class="btn btn-secondary">🎨 カスタムモデル版</a>
-                </div>
+                <a href="ar-model-viewer.html" class="demo-btn">🎯 デモを体験</a>
             </div>
             
-            <!-- マーカーベース案 -->
-            <div class="ar-option">
-                <h2>
-                    <span class="emoji">🎯</span>
-                    Hiroマーカー AR
-                    <span class="badge badge-advanced">上級者向け</span>
-                </h2>
-                
-                <div class="features">
-                    <h3>特徴</h3>
-                    <ul>
-                        <li>AR.js + A-Frameで実装</li>
-                        <li>Hiroマーカー認識</li>
-                        <li>リアルタイム3D描画</li>
-                        <li>高度なインタラクション</li>
-                        <li>完全カスタマイズ可能</li>
-                    </ul>
+            <!-- Hiro Marker AR -->
+            <div class="demo-card">
+                <h2>🎯 Hiroマーカー AR</h2>
+                <div class="description">
+                    AR.js + A-Frameによる高度なWebAR。<br>
+                    Hiroマーカーで3Dオブジェクトを表示。<br>
+                    <strong>カスタマイズ性抜群</strong>
                 </div>
-                
-                <div class="pros-cons">
-                    <div class="pros">
-                        <h4>メリット</h4>
-                        <ul>
-                            <li>高度なカスタマイズが可能</li>
-                            <li>リアルタイム制御</li>
-                            <li>複数オブジェクト配置</li>
-                            <li>インタラクション機能豊富</li>
-                            <li>学習効果が高い</li>
-                        </ul>
-                    </div>
-                    <div class="cons">
-                        <h4>デメリット</h4>
-                        <ul>
-                            <li>実装が複雑</li>
-                            <li>マーカー印刷が必要</li>
-                            <li>デバイス互換性課題</li>
-                            <li>パフォーマンス調整必要</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="demo-buttons">
-                    <a href="ar-hiro-marker.html" class="btn btn-primary">🎯 マーカーデモ</a>
-                    <a href="hiro-marker.svg" class="btn btn-secondary" target="_blank">📄 マーカーDL</a>
-                    <a href="HTTPS_SERVER_GUIDE.md" class="btn btn-secondary" target="_blank">⚡ HTTPS設定</a>
-                </div>
+                <a href="ar-hiro-marker.html" class="demo-btn">🎮 デモを体験</a>
+                <a href="#marker-section" class="demo-btn secondary">📄 マーカー取得</a>
             </div>
         </div>
         
-        <!-- 技術比較表 -->
-        <div class="technical-comparison">
-            <h2>📊 技術比較表</h2>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th>項目</th>
-                        <th>Model-Viewer</th>
-                        <th>Hiroマーカー</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>実装難易度</td>
-                        <td>⭐️ 超簡単</td>
-                        <td>⭐️⭐️⭐️ 中級</td>
-                    </tr>
-                    <tr>
-                        <td>開発時間</td>
-                        <td>10分</td>
-                        <td>2-3時間</td>
-                    </tr>
-                    <tr>
-                        <td>ユーザビリティ</td>
-                        <td>⭐️⭐️⭐️⭐️⭐️ 最高</td>
-                        <td>⭐️⭐️⭐️ 良好</td>
-                    </tr>
-                    <tr>
-                        <td>カスタマイズ性</td>
-                        <td>⭐️⭐️ 制限あり</td>
-                        <td>⭐️⭐️⭐️⭐️⭐️ 自由度高</td>
-                    </tr>
-                    <tr>
-                        <td>デバイス対応</td>
-                        <td>iPhone/Android自動対応</td>
-                        <td>ブラウザ依存</td>
-                    </tr>
-                    <tr>
-                        <td>準備作業</td>
-                        <td>なし</td>
-                        <td>マーカー印刷 + HTTPS設定</td>
-                    </tr>
-                    <tr>
-                        <td>安定性</td>
-                        <td>⭐️⭐️⭐️⭐️⭐️ 非常に安定</td>
-                        <td>⭐️⭐️⭐️ 環境依存</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Hiroマーカーダウンロードセクション -->
+        <div id="marker-section" class="marker-download">
+            <h3>📋 Hiroマーカーのダウンロード</h3>
+            <p>HiroマーカーARを体験するには、下記のマーカーを印刷してください</p>
+            
+            <div class="marker-preview">
+                <svg viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="7" height="7" fill="white"/>
+                    <rect x="1" y="1" width="5" height="5" fill="black"/>
+                    <rect x="2" y="2" width="3" height="3" fill="white"/>
+                    <rect x="3" y="2" width="1" height="1" fill="black"/>
+                    <rect x="2" y="3" width="1" height="2" fill="black"/>
+                    <rect x="4" y="3" width="1" height="1" fill="black"/>
+                    <rect x="3" y="4" width="2" height="1" fill="black"/>
+                </svg>
+            </div>
+            
+            <a href="data:image/svg+xml,%3Csvg viewBox='0 0 7 7' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='7' height='7' fill='white'/%3E%3Crect x='1' y='1' width='5' height='5' fill='black'/%3E%3Crect x='2' y='2' width='3' height='3' fill='white'/%3E%3Crect x='3' y='2' width='1' height='1' fill='black'/%3E%3Crect x='2' y='3' width='1' height='2' fill='black'/%3E%3Crect x='4' y='3' width='1' height='1' fill='black'/%3E%3Crect x='3' y='4' width='2' height='1' fill='black'/%3E%3C/svg%3E" 
+               download="hiro-marker.svg" 
+               class="demo-btn">
+                💾 マーカーをダウンロード
+            </a>
         </div>
         
-        <!-- フッター -->
-        <div class="footer">
-            <h3>🎉 どちらも試してみよう！</h3>
-            <p>
-                <strong>初心者・実用重視</strong> → Model-Viewer ARがおすすめ<br>
-                <strong>学習・カスタマイズ重視</strong> → HiroマーカーARで技術を深めよう<br><br>
-                このデモサイトでは、両方のアプローチを体験できます。<br>
-                あなたのプロジェクトに最適な実装方法を見つけてください！
-            </p>
+        <!-- 使用方法 -->
+        <div class="instructions">
+            <h3>📱 使用方法</h3>
+            <ol>
+                <li><strong>Model-Viewer AR</strong>: デモボタンをクリックして、画面右下のARボタンをタップ</li>
+                <li><strong>Hiroマーカー AR</strong>: 上記マーカーを印刷し、デモページでカメラを向ける</li>
+                <li><strong>推奨環境</strong>: モバイルデバイス（iPhone/Android）のブラウザ</li>
+                <li><strong>注意事項</strong>: カメラアクセス許可が必要です</li>
+            </ol>
         </div>
     </div>
     
     <script>
-        // パフォーマンス監視
-        window.addEventListener('load', () => {
-            console.log('WebAR比較サイト読み込み完了');
-            
-            // デモボタンクリック時の統計
-            document.querySelectorAll('.btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const demoType = e.target.textContent.includes('Model-Viewer') ? 'model-viewer' : 'marker';
-                    console.log(`デモ起動: ${demoType}`);
-                });
+        // デモ統計
+        document.querySelectorAll('.demo-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = e.target.href;
+                if (target.includes('model-viewer')) {
+                    console.log('Model-Viewer ARデモ開始');
+                } else if (target.includes('hiro-marker')) {
+                    console.log('HiroマーカーARデモ開始');
+                }
             });
         });
         
-        // モバイル環境検出とアドバイス表示
+        // モバイル検出
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        if (isMobile) {
-            console.log('モバイル環境検出 - AR機能が利用可能です');
-        } else {
-            console.log('デスクトップ環境検出 - モバイルデバイスでのテストを推奨');
-        }
+        console.log(isMobile ? 'モバイル環境検出' : 'デスクトップ環境検出');
     </script>
 </body>
 </html>
