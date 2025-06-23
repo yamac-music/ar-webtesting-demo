@@ -11,3 +11,9 @@ yarn-error.log*
 .DS_Store
 *.log
 ssl/
+*.pem
+*.key
+.claude/
+.vite/
+create-ssl-cert.sh
+start-https-server.js

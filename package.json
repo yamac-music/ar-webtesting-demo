@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "vite --host",
     "dev-https": "vite --host",
-    "dev-express": "node start-https-server.js",
     "build": "vite build",
     "preview": "vite preview --host"
   },
