@@ -25,8 +25,6 @@ export default defineConfig({
       input: {
         main: 'index.html',
         'ar-model-viewer': 'ar-model-viewer.html',
-        'ar-model-viewer-animated': 'ar-model-viewer-animated.html',
-        'ar-model-viewer-custom': 'ar-model-viewer-custom.html',
         'ar-hiro-marker': 'ar-hiro-marker.html'
       }
     }
